@@ -62,7 +62,8 @@ func (bc *BlockChain) NewBlock(proof int64) *Block {
 		PreviousHash: phash,
 		Proof:        proof,
 	}
-	copy(b.Tx, bc.CurrentTx)
+	//copy(b.Tx, bc.CurrentTx)
+	b.Tx = bc.CurrentTx
 	//Reset current transaction.
 	bc.CurrentTx = make([]Transaction, 0)
 	//Add block to the end of the chain.
@@ -79,8 +80,9 @@ func (bc *BlockChain) NewTx(sender, recipient string, amount float64) int {
 		recipient,
 		amount,
 	}
+	//Add this transaction to current transacttions list.
 	bc.CurrentTx = append(bc.CurrentTx, tx)
-	//The index of the Block that will hold this transaction
+	//The index of the Block that will hold this transaction.
 	return len(bc.Chain)
 
 }
@@ -97,6 +99,7 @@ func (bc *BlockChain) ProofOfWork() int64 {
 	for {
 
 		if validateProof(lastHash, proof, lastProof) {
+			fmt.Printf("hash:%s proof: %d", lastHash, proof)
 			break
 		} else {
 			proof = proof + 1
